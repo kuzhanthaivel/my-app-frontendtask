@@ -244,7 +244,7 @@ export default function SearchContent() {
                         .filter(item => (selectedStatus === "All" || !selectedStatus || item.status === selectedStatus) &&
                           (selectedCompanies.length === 0 || selectedCompanies.includes(item.owner)))
                         .map((item, index) => (
-                          <div key={index} className="grid grid-cols-1  border border-gray-200  rounded-xl xl:border-none   sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5  py-4 items-center hover:bg-gray-100 pl-2 hover:rounded-2xl p-4">
+                          <div key={index} className="grid grid-cols-1  border border-gray-200  rounded-xl xl:border-none   sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4  py-4 items-center hover:bg-gray-100 pl-2 hover:rounded-2xl p-4">
                             <div className="w-40 h-28 bg-white flex items-center justify-center rounded-lg lg:shadow-[0px_4.34px_108.57px_0px_#98989840] lg:shadow-[0px_3.94px_10px_0px_#E8E8E840]">
                               <Image className=" w-auto h-auto " src={ImageUnavailable} alt="ImageUnavailable" />
                             </div>
