@@ -11,15 +11,25 @@ import ImageUnavailable from "./assets/Image Unavailable.png";
 import { FaSyncAlt, FaExclamationTriangle } from "react-icons/fa";
 import Image from 'next/image'
 import classImage from "./assets/classImg.png";
+import { Suspense } from 'react';
 
 const poppins = Poppins({
   subsets: ["latin"],
   weight: "400",
 });
 
+
 export default function Search() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SearchContent />
+    </Suspense>
+  );
+}
+ function SearchContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+
 
   const [selectedCompanies, setSelectedCompanies] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState(searchParams.get('status') || "");
@@ -29,6 +39,7 @@ export default function Search() {
   const [apiResData, setApiResData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [open, setOpen] = useState(false);
 
   const toggleSelection = (companyName) => {
     setSelectedCompanies((prev) =>
@@ -36,6 +47,10 @@ export default function Search() {
         ? prev.filter((name) => name !== companyName)
         : [...prev, companyName]
     );
+  };
+
+  const handleClick = () => {
+    setOpen(prevState => !prevState); // Toggles the state
   };
 
   useEffect(() => {
@@ -119,15 +134,14 @@ export default function Search() {
     : [];
 
   return (
-    <main className={`${poppins.className} bg-white text-black`}>
-      {/* Header Section */}
-      <div className="w-full h-28 flex flex-row items-center justify-start gap-9 p-4 pl-14 bg-[#F8FAFE]">
+    <main className={`${poppins.className} bg-white text-black `}>
+      <div className="w-full h-auto flex md:flex-row items-center justify-start md:gap-9 sm:p-4 sm:pl-14 bg-[#F8FAFE] flex-col p-3 gap-3">
         <Image className="w-40" src={Logo} alt="Trademarkia Logo" />
-        <div className="flex flex-row w-auto space-x-3 justify-center items-center">
+        <div className="flex sm:flex-row w-auto space-x-3 justify-center items-center flex-col gap-3">
           <div className="flex border p-2 bg-white border-[#D4D4D4] rounded-xl border-2 items-center gap-1 w-auto">
             <Image className="w-6 h-6" src={Searchicon} alt="Search" />
             <input
-              className="w-96 focus:border-transparent focus:outline-none focus:ring-0"
+              className="md:w-96 focus:border-transparent focus:outline-none focus:ring-0 "
               type="text"
               placeholder="Search Trademark Here eg. Mickey Mouse"
               onChange={(e) => setMasterSearch(e.target.value)}
@@ -135,7 +149,7 @@ export default function Search() {
             />
           </div>
           <button
-            className="flex text-white w-32 items-center justify-center p-4 bg-[#4380EC] rounded-xl"
+            className="flex text-white md:w-32 items-center justify-center md:p-3 bg-[#4380EC] rounded-xl p-2 "
             type="button"
             onClick={() => alert("I am done with the useEffect")}
           >
@@ -146,17 +160,16 @@ export default function Search() {
 
       <div className="bg-[#EAF1FF] h-1.5"></div>
 
-      {/* Main Content */}
-      <div className="px-10">
-        {/* Results Info */}
+      <div className="px-10 ">
         <div className="py-4">
           <p className="text-[#4B5563] font-semibold">About {formattedData.length} Trademarks found for {`"${masterSearch}"`}</p>
         </div>
 
         <div className="bg-[#E7E6E6] h-0.5"></div>
 
-        {/* Search Suggestions and Tools */}
-        <div className="flex justify-between items-center w-full py-3 px-1">
+
+
+        <div className="flex sm:justify-between sm:items-center w-full py-3 px-1 flex-col gap-2 sm:flex-row">
           <div className="flex gap-3 items-center text-center">
             <p className="text-[#4B5563]">Also try searching for</p>
             <div className="flex gap-2">
@@ -182,10 +195,12 @@ export default function Search() {
             </div>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex gap-3 items-end justify-end
+          ">
             <button
-              className="gap-1 p-2 rounded-xl text-[#4380EC] border border-[#4380EC] flex items-center justify-center text-sm bg-[#EEF4FF]"
+              className={`gap-1 p-2 rounded-xl  border border-[#969696] flex items-center justify-center text-sm ${open ? 'bg-[#5999f4] border border-[#4380EC] text-black bg ':"" }`}
               type="button"
+              onClick={handleClick}
             >
               <Image src={Fillter} alt="Filter" />
               Filter
@@ -209,9 +224,7 @@ export default function Search() {
           </div>
         </div>
 
-        {/* Main Content Layout */}
-        <div className="flex flex-row gap-6">
-          {/* Results Section */}
+        <div className="flex flex-row gap-6  ">
           <div className="flex-1">
             {loading ? (
               <div className="w-full mx-auto bg-white p-4 rounded-lg scale-95 flex justify-center items-center h-64">
@@ -226,24 +239,25 @@ export default function Search() {
               </div>
             ) : (
               <>
+
                 {currentView === "list" && (
-                  <div className="w-full mx-auto bg-white p-4 rounded-lg scale-95">
-                    <div className="grid grid-cols-5 text-[#313131] font-bold border-b pb-2 border-b-[#E7E6E6]">
+                  <div className="w-full mx-auto bg-white p-4 rounded-lg scale-95   max-w-4xl gap-8 ">
+                    <div className="hidden xl:grid grid-cols-5 text-[#313131] font-bold border-b pb-2 border-b-[#E7E6E6]  ">
                       <span className="pl-6">Mark</span>
                       <span className="">Details</span>
                       <span className="">Status</span>
                       <span className="">Class/Description</span>
                     </div>
-
+                    <div className="flex flex-col gap-4 xl:gap-0">
                     {formattedData
                       .filter(item => (selectedStatus === "All" || !selectedStatus || item.status === selectedStatus) &&
                         (selectedCompanies.length === 0 || selectedCompanies.includes(item.owner)))
                       .map((item, index) => (
-                        <div key={index} className="grid grid-cols-5 gap-4 py-4 items-center hover:bg-gray-100 pl-2 hover:rounded-2xl">
-                          <div className="w-40 h-28 bg-white flex items-center justify-center rounded-lg shadow-[0px_4.34px_108.57px_0px_#98989840] shadow-[0px_3.94px_10px_0px_#E8E8E840]">
-                            <Image className="w-14" src={ImageUnavailable} alt="ImageUnavailable" />
+                        <div key={index} className="grid grid-cols-1  border border-gray-200  rounded-xl xl:border-none   sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5  py-4 items-center hover:bg-gray-100 pl-2 hover:rounded-2xl p-4">
+                          <div className="w-40 h-28 bg-white flex items-center justify-center rounded-lg lg:shadow-[0px_4.34px_108.57px_0px_#98989840] lg:shadow-[0px_3.94px_10px_0px_#E8E8E840]">
+                            <Image className=" w-auto h-auto " src={ImageUnavailable} alt="ImageUnavailable" />
                           </div>
-                          <div className="flex flex-col justify-between gap-6">
+                          <div className="flex flex-col justify-between md:gap-6">
                             <div>
                               <p className="text-[#1A1A1A] font-semibold">{item.name}</p>
                               <p className="text-sm text-[#1A1A1A]">{item.owner}</p>
@@ -253,7 +267,7 @@ export default function Search() {
                               <p className="text-sm text-[#1A1A1A]">{item.filingDate}</p>
                             </div>
                           </div>
-                          <div className="flex flex-col justify-between gap-11">
+                          <div className="flex flex-col justify-between md:gap-11 gap-5">
                             <div>
                               <p className={`flex items-center gap-2 ${item.status === "registered" ? "text-[#52B649]" :
                                 item.status === "pending" ? "text-[#ECC53C]" :
@@ -281,7 +295,7 @@ export default function Search() {
                               )}
                             </div>
                           </div>
-                          <div className="flex flex-col justify-between gap-3">
+                          <div className="flex flex-col justify-between md:gap-3">
                             <p className="text-sm text-[#1D1C1D] line-clamp-2 overflow-hidden">{item.description}</p>
                             <div className="flex gap-2 mt-2 text-gray-500 text-xs font-semibold">
                               {item.classes.slice(0, 3).map((cls, i) => (
@@ -301,11 +315,18 @@ export default function Search() {
                             </div>
                           </div>
                         </div>
-                      ))}
+                      ))} </div>
                   </div>
                 )}
+
+
+
+
+
+
+
                 {currentView === "grid" && (
-                  <div className="grid grid-cols-3 gap-4 px-6 w-full mx-auto scale-95">
+                  <div className="grid lg:grid-cols-2 gap-4 px-6 w-full mx-auto scale-95 grid-cols-1 xl:grid-cols-3 2xl:grid-cols-4">
                     {formattedData
                       .filter(item => (selectedStatus === "All" || !selectedStatus || item.status === selectedStatus) &&
                         (selectedCompanies.length === 0 || selectedCompanies.includes(item.owner)))
@@ -401,8 +422,9 @@ export default function Search() {
             )}
           </div>
 
-          {/* Filters Section */}
-          <div className="w-72 space-y-6">
+
+
+          <div className={`w-72 space-y-6 ${open ? "absolute z-10 top-[360px] right-0 bg-white p-4 shadow-lg sm:shadow-none" : "hidden"} sm:block sm:relative sm:top-0 sm:left-0 sm:bg-transparent sm:p-0`}>
             <div className="w-full p-4 gap-5 bg-white rounded-lg shadow-[0px_4.34px_108.57px_0px_#98989840] shadow-[0px_3.94px_10px_0px_#E8E8E840] flex flex-col">
               <div>
                 <p className="text-black font-bold">Status</p>
@@ -458,9 +480,7 @@ export default function Search() {
             <div className="w-full p-4 gap-5 bg-white rounded-lg shadow-[0px_4.34px_108.57px_0px_#98989840] shadow-[0px_3.94px_10px_0px_#E8E8E840] flex flex-col">
               <div className="p-4 gap-1">
                 <div className="flex pb-2 mb-2 space-x-4 text-sm">
-                  <span className="font-semibold border-b-2 border-black">Owners</span>
-                  <span className="text-gray-500 cursor-pointer">Law Firms</span>
-                  <span className="text-gray-500 cursor-pointer">Attorneys</span>
+                  <span className="font-semibold ">Owners</span>
                 </div>
                 <div className="flex border bg-white border-[#D4D4D4] rounded-xl items-center p-1">
                   <Image className="w-6 h-6" src={Searchicon} alt="Search" />
