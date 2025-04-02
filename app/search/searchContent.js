@@ -232,7 +232,7 @@ export default function SearchContent() {
                 <>
   
                   {currentView === "list" && (
-                    <div className="w-full mx-auto bg-white p-4 rounded-lg scale-95  max-w-4xl gap-8 ">
+                    <div className="w-full mx-auto bg-white pt-4 rounded-lg max-w-4xl  ">
                       <div className="hidden xl:grid grid-cols-4 text-[#313131] font-bold border-b pb-2 border-b-[#E7E6E6] text-center flex justify-center items-center ">
                         <span className="pl-6">Mark</span>
                         <span className="">Details</span>
