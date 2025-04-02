@@ -142,7 +142,6 @@ export default function SearchContent() {
             <button
               className="flex text-white md:w-32 items-center justify-center md:p-3 bg-[#4380EC] rounded-xl p-2 "
               type="button"
-              onClick={() => alert("I am done with the useEffect")}
             >
               Search
             </button>
